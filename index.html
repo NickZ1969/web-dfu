@@ -2,7 +2,7 @@
 <html>
   <head>
     
-    <title>WebUSB DFU</title>
+    <title>Everything Fuel Injection Firmware Flasher</title>
     <script src="dfu.js"></script>
     <script src="dfuse.js"></script>
     <script src="FileSaver.js"></script>
@@ -14,7 +14,7 @@
                 const data = await response.json();
                 const files = data.map(file => file.name);
                 const fileListDiv = document.getElementById('fileList');
-                fileListDiv.innerHTML = '<h2>Available Files:</h2>';
+                fileListDiv.innerHTML = '<h2>STM Pro ECU Available Files:</h2>';
                 files.forEach(file => {
                     const fileLink = `https://raw.githubusercontent.com/NickZ1969/firmware/master/${file}`;
                     fileListDiv.innerHTML += `<p><a href="${fileLink}" download>${file}</a></p>`;
