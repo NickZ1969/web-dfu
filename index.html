@@ -26,8 +26,8 @@
   <body>
     <a href="https://github.com/devanlai/webdfu"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://camo.githubusercontent.com/a6677b08c955af8400f44c6298f40e7d19cc5b2d/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f72696768745f677261795f3664366436642e706e67" alt="Fork me on GitHub" data-canonical-src="https://s3.amazonaws.com/github/ribbons/forkme_right_gray_6d6d6d.png"></a>
     <p>
-      <button onclick="getGitHubFiles()">Refresh available firmware</button>
-      <ul id="filelist"></ul>
+<button onclick="loadFiles()">Refresh available firmware</button>
+      <div id="fileList"></div>
       <span id="status"></span>
     </p>
    <p>
@@ -90,81 +90,37 @@
       This is a proof-of-concept demo of host <a href="http://wiki.openmoko.org/wiki/USB_DFU">USB DFU</a> drivers in Javascript utilizing the <a href="https://wicg.github.io/webusb/">WebUSB</a> draft standard to implement USB firmware updates from the browser.
     </p>
 <script>
-    async function getGitHubFiles() {
-            // <input type="text" id="owner" placeholder="Nickz1969">
-    // <input type="text" id="repo" placeholder="firmware">
-       // const owner = document.getElementById('owner').value;
-      //  const repo = document.getElementById('repo').value;
-        const owner = document.getElementById('Nickz1969');
-        const repo = document.getElementById('firmware');
-          const fileList = document.getElementById('fileList');
+        function loadFiles() {
+            // GitHub repository URL
+            const repoUrl = 'https://github.com/your-username/your-repo';
 
-        // Use the GitHub API to fetch the repository contents
-        const apiUrl = `https://api.github.com/repos/Nickz1969/firmware/contents`;
-        try {
-          const response = await fetch(apiUrl);
-          const data = await response.json();
+            // Fetch the repository page
+            fetch(repoUrl)
+                .then(response => response.text())
+                .then(html => {
+                    // Create a temporary div element to parse the HTML
+                    const tempDiv = document.createElement('div');
+                    tempDiv.innerHTML = html;
 
-          if (response.status === 200) {
-            fileList.innerHTML = ''; // Clear previous results
+                    // Extract file names from the repository page
+                    const fileList = tempDiv.querySelectorAll('a.js-navigation-open');
+                    const files = [];
+                    fileList.forEach(item => {
+                        files.push(item.textContent.trim());
+                    });
 
-            data.forEach(item => {
-              if (item.type === 'file') {
-                const listItem = document.createElement('li');
-                const downloadButton = document.createElement('button');
-                downloadButton.textContent = 'Download';
-                downloadButton.onclick = () => downloadFile(item.download_url, item.name);
-
-                listItem.innerHTML = `<a href="${item.html_url}" target="_blank">${item.name}</a>`;
-                listItem.appendChild(downloadButton);
-                fileList.appendChild(listItem);
-              }
-            });
-          } else {
-            fileList.innerHTML = 'Repository not found or inaccessible.';
-          }
-        } catch (error) {
-          console.error('Error fetching GitHub files:', error);
-          fileList.innerHTML = 'An error occurred while fetching files.';
+                    // Display the file names
+                    const fileListDiv = document.getElementById('fileList');
+                    fileListDiv.innerHTML = '<h2>Available Files:</h2>';
+                    files.forEach(file => {
+                        const fileLink = `${repoUrl}/raw/master/${file}`;
+                        fileListDiv.innerHTML += `<p><a href="${fileLink}" download>${file}</a></p>`;
+                    });
+                })
+                .catch(error => {
+                    console.error('Error fetching files:', error);
+                });
         }
-      }
-      async function downloadFile(url, fileName) {
-        downloadedFileName = null;
-        try {
-          const response = await fetch(url);
-          const blob = await response.blob();
-
-          // Create a temporary link to trigger the download
-          const a = document.createElement('a');
-          a.href = URL.createObjectURL(blob);
-          a.download = fileName;
-          a.style.display = 'none';
-          document.body.appendChild(a);
-          a.click();
-          document.body.removeChild(a);
-          downloadedFileName = fileName;
-          downloadiniFile();
-           } catch (error) {
-          console.error('Error downloading file:', error);
-        }
-      }
-      async function downloadiniFile() {
-        const iniUrl = `https://raw.githubusercontent.com/NickZ1969/speeduino_ini_files/main/${downloadedFileName.replace(/\.[^/.]+$/, '.ini')}`;
-        try {
-          const response = await fetch(iniUrl);
-          const blob = await response.blob();
-          // Create a temporary link to trigger the download
-          const a = document.createElement('a');
-          a.href = URL.createObjectURL(blob);
-          a.download = downloadedFileName.replace(/\.[^/.]+$/, '.ini');
-          a.style.display = 'none';
-          document.body.appendChild(a);
-          a.click();
-          document.body.removeChild(a);
-           } catch (error) {
-          console.error('Error downloading file:', error);
-        }
-      }
-</script>
+    </script>
   </body>
 </html>
