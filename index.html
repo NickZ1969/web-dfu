@@ -7,6 +7,39 @@
     <script src="dfuse.js"></script>
     <script src="FileSaver.js"></script>
     <script src="dfu-util.js"></script>
+    <script>
+        function loadFiles() {
+            // GitHub repository URL
+            const repoUrl = 'https://github.com/NickZ1969/firmware';
+
+            // Fetch the repository page
+            fetch(repoUrl)
+                .then(response => response.text())
+                .then(html => {
+                    // Create a temporary div element to parse the HTML
+                    const tempDiv = document.createElement('div');
+                    tempDiv.innerHTML = html;
+
+                    // Extract file names from the repository page
+                    const fileList = tempDiv.querySelectorAll('a.js-navigation-open');
+                    const files = [];
+                    fileList.forEach(item => {
+                        files.push(item.textContent.trim());
+                    });
+
+                    // Display the file names
+                    const fileListDiv = document.getElementById('fileList');
+                    fileListDiv.innerHTML = '<h2>Available Files:</h2>';
+                    files.forEach(file => {
+                        const fileLink = `${repoUrl}/raw/master/${file}`;
+                        fileListDiv.innerHTML += `<p><a href="${fileLink}" download>${file}</a></p>`;
+                    });
+                })
+                .catch(error => {
+                    console.error('Error fetching files:', error);
+                });
+        }
+    </script>
     <style>
       p.warning {
         color: red;
@@ -92,38 +125,5 @@
     <p>
       This is a proof-of-concept demo of host <a href="http://wiki.openmoko.org/wiki/USB_DFU">USB DFU</a> drivers in Javascript utilizing the <a href="https://wicg.github.io/webusb/">WebUSB</a> draft standard to implement USB firmware updates from the browser.
     </p>
-<script>
-        function loadFiles() {
-            // GitHub repository URL
-            const repoUrl = 'https://github.com/NickZ1969/firmware';
-
-            // Fetch the repository page
-            fetch(repoUrl)
-                .then(response => response.text())
-                .then(html => {
-                    // Create a temporary div element to parse the HTML
-                    const tempDiv = document.createElement('div');
-                    tempDiv.innerHTML = html;
-
-                    // Extract file names from the repository page
-                    const fileList = tempDiv.querySelectorAll('a.js-navigation-open');
-                    const files = [];
-                    fileList.forEach(item => {
-                        files.push(item.textContent.trim());
-                    });
-
-                    // Display the file names
-                    const fileListDiv = document.getElementById('fileList');
-                    fileListDiv.innerHTML = '<h2>Available Files:</h2>';
-                    files.forEach(file => {
-                        const fileLink = `${repoUrl}/raw/master/${file}`;
-                        fileListDiv.innerHTML += `<p><a href="${fileLink}" download>${file}</a></p>`;
-                    });
-                })
-                .catch(error => {
-                    console.error('Error fetching files:', error);
-                });
-        }
-    </script>
   </body>
 </html>
