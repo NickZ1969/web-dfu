@@ -7,7 +7,7 @@
     <script src="dfuse.js"></script>
     <script src="FileSaver.js"></script>
     <script src="dfu-util.js"></script>
-       <script>
+      <script>
         async function loadFiles() {
             try {
                 const response = await fetch('https://api.github.com/repos/NickZ1969/firmware/contents');
@@ -16,7 +16,7 @@
                 const fileListDiv = document.getElementById('fileList');
                 fileListDiv.innerHTML = '<h2>Available Files:</h2>';
                 files.forEach(file => {
-                    const fileLink = `https://github.com/NickZ1969/firmware/raw/master/${file}`;
+                    const fileLink = `https://raw.githubusercontent.com/NickZ1969/firmware/master/${file}`;
                     fileListDiv.innerHTML += `<p><a href="${fileLink}" download>${file}</a></p>`;
                 });
             } catch (error) {
