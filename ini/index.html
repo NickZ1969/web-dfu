@@ -1,0 +1,142 @@
+{\rtf1\ansi\ansicpg1252\cocoartf2759
+\cocoatextscaling0\cocoaplatform0{\fonttbl\f0\fswiss\fcharset0 Helvetica;}
+{\colortbl;\red255\green255\blue255;}
+{\*\expandedcolortbl;;}
+\paperw11900\paperh16840\margl1440\margr1440\vieww11520\viewh8400\viewkind0
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
+
+\f0\fs24 \cf0 <!DOCTYPE html>\
+<html>\
+  <head>\
+    \
+    <title>Everything Fuel Injection Firmware Flasher</title>\
+    <script src="dfu.js"></script>\
+    <script src="dfuse.js"></script>\
+    <script src="FileSaver.js"></script>\
+    <script src="dfu-util.js"></script>\
+      <script>\
+        async function loadFiles() \{\
+            try \{\
+                const response = await fetch('https://api.github.com/repos/NickZ1969/Speeduino_ini_files/contents');\
+                const data = await response.json();\
+                const files = data.map(file => file.name);\
+                const fileListDiv = document.getElementById('fileList');\
+                fileListDiv.innerHTML = '<h2>STM Pro ECU Available Files:</h2>';\
+                files.forEach(file => \{\
+                    const fileLink = `https://raw.githubusercontent.com/NickZ1969/Speeduino_ini_files/master/$\{file\}`;\
+                    fileListDiv.innerHTML += `<p><a href="$\{fileLink\}" download>$\{file\}</a></p>`;\
+                \});\
+            \} catch (error) \{\
+                console.error('Error fetching files:', error);\
+            \}\
+        \}\
+\
+        // Automatically load files when the page is opened\
+        window.onload = loadFiles;\
+    </script>\
+    <link rel="stylesheet" href="/styles.css">\
+    <style>\
+      p.warning \{\
+        color: red;\
+      \}\
+      p.error \{\
+        color: red;\
+        font-weight: bold;\
+      \}\
+      label.radio \{\
+        display: inline;\
+      \}\
+      input:invalid \{\
+        color:red;\
+      \}\
+          #fileList \{\
+        margin-top: 20px;\
+    \}\
+    </style>\
+  </head>\
+  <body>\
+    <a href="https://github.com/devanlai/webdfu"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://camo.githubusercontent.com/a6677b08c955af8400f44c6298f40e7d19cc5b2d/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f72696768745f677261795f3664366436642e706e67" alt="Fork me on GitHub" data-canonical-src="https://s3.amazonaws.com/github/ribbons/forkme_right_gray_6d6d6d.png"></a>\
+    <p>\
+      <div id="fileList"></div>\
+      <span id="status"></span>\
+    </p>\
+    <p>Click the firmware file above to download, It should download to your default Downloads directory</p>\
+    <br>\
+    <p>Remember to place the jumper on the pins as shown in the picture</p>\
+    <img src="https://nickz1969.github.io/web-dfu/DFUmode.jpg" alt="DFUmode" width="200" height="150">\
+    <p>\
+      Clicking connect will open a window listing USB devices, Click on the STM32 Bootloader.\
+      <br>\
+      Windows users may need a special USB driver, available here <a href="https://zadig.akeo.ie/">Zadig</a>\
+      <br>\
+      <img src="https://nickz1969.github.io/web-dfu/Zidag.jpg" alt="Zidag" width="540" height="250">\
+    </p>\
+    <p>\
+      It will then tell you there are multiple interfaces,    \
+    </p>\
+    <p>\
+      <img src="https://nickz1969.github.io/web-dfu/dfuadd.jpg" alt="DFUadd" width="760" height="150">\
+    </p>\
+    <p>Select this one by using the radio button then click 'select interface'</p>\
+    <br>\
+   <p>\
+      <label for="vid">Vendor ID (hex): Do not use this box.</label>\
+      <input list="vendor_ids" type="text" name="vid" id="vid" maxlength="6" size="8" pattern="0x[A-Fa-f0-9]\{1,4\}"/>\
+      <datalist id="vendor_ids">\
+        <option value="0x1209">dapboot DFU bootloader</option>\
+        <option value="0x0D28">mbed DAPLink</option>\
+        <option value="0x1EAF">LeafLabs Maple/stm32duino bootloader</option>\
+      </datalist>\
+    </p>\
+    <p>\
+      <button id="connect">Connect</button>\
+    </p>\
+    <dialog id="interfaceDialog">\
+      Your device has multiple DFU interfaces. Select one from the list below:\
+      <form id="interfaceForm" method="dialog">\
+        <button id="selectInterface" type="submit">Select interface</button>\
+      </form>\
+    </dialog>\
+    <p>\
+      <div id="usbInfo" style="white-space: pre"></div>\
+      <div id="dfuInfo" style="white-space: pre"></div>\
+    </p>\
+    <fieldset>\
+      <legend>Runtime mode</legend>\
+      <button id="detach" disabled="true">Detach DFU</button>\
+    </fieldset>\
+    <fieldset>\
+      <form id="configForm">\
+        <label for="transferSize">Transfer Size:</label>\
+        <input type="number" name="transferSize" id="transferSize" value="1024"/>\
+        <div id="dfuseFields" hidden="true">\
+          <label for="dfuseStartAddress">DfuSe Start Address:</label>\
+          <input type="text" name="dfuseStartAddress" id="dfuseStartAddress" title="Initial memory address to read/write from (hex)" size="10" pattern="0x[A-Fa-f0-9]+"/>\
+          <label for="dfuseUploadSize">DfuSe Upload Size:</label>\
+          <input type="number" name="dfuseUploadSize" id="dfuseUploadSize" min="1"/>\
+        </div>\
+      \
+        <legend>DFU mode</legend>\
+        <fieldset>\
+          <legend>Upload Firmware to ECU</legend>\
+          <p>\
+            <input type="file" id="firmwareFile" name="file" disabled="true"/>\
+          </p>\
+          <p>\
+            <button id="download" disabled="true">Download</button>\
+          </p>\
+          <div class="log" id="downloadLog"></div>\
+        </fieldset>\
+        <fieldset>\
+          <p>\
+            <button id="upload" disabled="true" hidden>Upload</button>\
+          </p>          <div class="log" id="uploadLog"></div>\
+        </fieldset>\
+      </form>\
+    </fieldset>\
+    <h1>About</h1>\
+    <p>\
+      This is a proof-of-concept demo of host <a href="http://wiki.openmoko.org/wiki/USB_DFU">USB DFU</a> drivers in Javascript utilizing the <a href="https://wicg.github.io/webusb/">WebUSB</a> draft standard to implement USB firmware updates from the browser.\
+    </p>\
+  </body>\
+</html>}
