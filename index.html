@@ -59,8 +59,14 @@
     <br>     
      <p>Click here to get the Tunerstudio INI file here <a href="https://nickz1969.github.io/web-dfu/ini/">ini file</a></p>
     <br>
-    <p>Remember to place the jumper on the pins as shown in the picture</p>
+    <p>Remember to place the jumper on the pins as shown or Press and hold the button while you connect the USB power in the picture</p>
+    The units with the button have 2 LEDs, GREEN is power and RED is MCU active. when using the second method (push button),
+    the GREEN will light and the RED will not, this is in DUF/Programing mode.
+    If the RED LED is flashing its still active mode and you will need to try again.
+    some ECU's will still have the jumper and 2 LEDs, The led actions and wait time will still apply, but you will have to remove the jumper when repowering the ECU.
+    you can now program the ECU, Once completed wait until the RED LED begins to flash  for a couple of seconds before removing the power and resetting the ECU.
     <img src="https://nickz1969.github.io/web-dfu/DFUmode.jpg" alt="DFUmode" width="200" height="150">
+    <img src="https://nickz1969.github.io/web-dfu/DFUbutton.jpg" alt="DFUmode" width="200" height="150">
     <p>
       Clicking connect will open a window listing USB devices, Click on the STM32 Bootloader.
       <br>
