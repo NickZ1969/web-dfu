@@ -63,16 +63,20 @@
     <img src="https://nickz1969.github.io/web-dfu/DFUmode.jpg" alt="DFUmode" width="200" height="150">
     <img src="https://nickz1969.github.io/web-dfu/DFUbutton.jpg" alt="DFUmode" width="200" height="150">
     <p></p>The units with the button have 2 LEDs, GREEN is power and RED is MCU active. when using the second method (push button),
-    the GREEN will light and the RED will not, this is in DUF/Programing mode.
+    the GREEN will light and the RED will not, this is in DFU/Programing mode.
     <br>
     If the RED LED is flashing its still active mode and you will need to try again.
     <br>
-    Some ECU's will still have the jumper and 2 LEDs, The LED actions and wait time will still apply, but you will have to remove the jumper when repowering the ECU.
+    Some ECU's will still have the jumper and 2 LEDs, The LED actions and wait time will still apply, but you will have to remove the jumper when repowering the ECU after the firmware upload.
     <br>
+    ECU's that look like the first picture, you use the jumper and then power up the ecu, when you get to the connect step you will see the divices list and one will be DFU.
     you can now program the ECU, Once completed wait until the RED LED begins to flash  for a couple of seconds before removing the power and resetting the ECU.</p>
 
     <p>
       Clicking connect will open a window listing USB devices, Click on the STM32 Bootloader.
+      <br>
+      <img src="https://nickz1969.github.io/web-dfu/stm.jpg" alt="DFU" width="200" height="150">
+     <img src="https://nickz1969.github.io/web-dfu/amp.jpg" alt="DFU" width="200" height="150">
       <br>
       Windows users may need a special USB driver, available here <a href="https://zadig.akeo.ie/">Zadig</a>
       <br>
