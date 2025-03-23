@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+or<!DOCTYPE html>
 <html>
   <head>
     
@@ -62,7 +62,12 @@
     <p>Remember to place the jumper on the pins as shown in the first picture. If you have the second version, Press and hold the button while you connect the USB power.</p>
     <img src="https://nickz1969.github.io/web-dfu/DFUmode.jpg" alt="DFUmode" width="250" height="175">
     <img src="https://nickz1969.github.io/web-dfu/DFUbutton.jpg" alt="DFUmode" width="250" height="175">
-    <p></p>The units with the button have 2 LEDs, GREEN is power and RED is MCU active. when using the second method (push button),
+    <br>
+    ECU's that look like the first picture, you use the jumper and then power up the ecu, when you get to the connect step you will see the divices list and one will be DFU.
+    you can now program the ECU, Once completed wait for 20 seconds before removing the power and resetting the ECU.
+    <br>
+    <br>
+    The units with the button have 2 LEDs, GREEN is power and RED is MCU active. when using the second method (push button),
     the GREEN will light and the RED will not, this is in DFU/Programing mode.
     <br>
     If the RED LED is flashing its still active mode and you will need to try again.
@@ -72,9 +77,7 @@
     Some ECU's will still have the jumper and 2 LEDs, The LED actions and wait time will still apply, but you will have to remove the jumper when repowering the ECU after the firmware upload.
     <br>
     You can now program the ECU, Once completed wait until the RED LED begins to flash  for a couple of seconds before removing the power and resetting the ECU.</p>
-    <br>
-    ECU's that look like the first picture, you use the jumper and then power up the ecu, when you get to the connect step you will see the divices list and one will be DFU.
-    you can now program the ECU, Once completed wait for 20 seconds before removing the power and resetting the ECU.</p>
+  </p>
 
     <p>
       Clicking connect will open a window listing USB devices, Click on the STM32 Bootloader or AMP.
@@ -154,7 +157,7 @@
     If you receive this error, don't panic, the MCU just isn't reporting back the correct reply.
     <br>
     This happens on the AMP32 chip and is normal.
-    <img src="https://nickz1969.github.io/web-dfu/error.jpg" alt="DFU" width="440" height="580">
+    <img src="https://nickz1969.github.io/web-dfu/error.jpg" alt="error" width="440" height="580">
     <h1>About</h1>
     <p>
       This is a proof-of-concept demo of host <a href="http://wiki.openmoko.org/wiki/USB_DFU">USB DFU</a> drivers in Javascript utilizing the <a href="https://wicg.github.io/webusb/">WebUSB</a> draft standard to implement USB firmware updates from the browser.
