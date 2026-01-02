@@ -261,7 +261,7 @@ function setEnabled(el, on) { el.disabled = !on; }
 btnSerial.onclick = async () => {
   try {
     await connectSerial();
-    setEnabled(btnReadVer, true);
+    setEnabled(btnReadVer, false);
   } catch (e) {
     log("ERROR: " + e.message);
   }
