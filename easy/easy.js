@@ -15,24 +15,37 @@ const ecuVerEl    = $("ecuVer");
 const latestVerEl = $("latestVer");
 
 // ---------------- Version parsing ----------------
-// Accept: "Speeduino 202501.6" OR "Speeduino 202501.6.1"
-function parseSpeeduinoVersion(line) {
-  const m = String(line).match(/Speeduino\s+(\d{6})(?:\.(\d+))?(?:\.(\d+))?/i);
-  if (!m) return null;
-  return { yyyymm:+m[1], minor: m[2]?+m[2]:0, patch: m[3]?+m[3]:0, raw:m[0] };
+function parseSpeeduinoVersionFromText(text) {
+  const s = String(text);
+
+  // Find ALL occurrences; we'll use the last good one
+  const re = /Speeduino\s+(\d{4})\.?(\d{2})\.?(\d+)(?:\.(\d+))?/ig;
+  // Explanation:
+  //  - year: 4 digits
+  //  - month: 2 digits
+  //  - minor: 1+ digits
+  //  - optional patch: .digits
+  // Works for both "202501.6" (year=2025 month=01) and "2025.01.6"
+
+  let m, last = null;
+  while ((m = re.exec(s)) !== null) {
+    const year  = parseInt(m[1], 10);
+    const month = parseInt(m[2], 10);
+    const minor = parseInt(m[3], 10);
+    const patch = m[4] !== undefined ? parseInt(m[4], 10) : 0;
+
+    if (month >= 1 && month <= 12) {
+      last = {
+        yyyymm: year * 100 + month, // 2025*100+1 => 202501
+        minor,
+        patch,
+        raw: m[0].trim()
+      };
+    }
+  }
+  return last;
 }
-function fmtVer(v){ return `${v.yyyymm}.${v.minor}` + (v.patch ? `.${v.patch}` : ""); }
-function cmpVer(a,b){
-  if (a.yyyymm !== b.yyyymm) return a.yyyymm < b.yyyymm ? -1 : 1;
-  if (a.minor  !== b.minor ) return a.minor  < b.minor  ? -1 : 1;
-  if (a.patch  !== b.patch ) return a.patch  < b.patch  ? -1 : 1;
-  return 0;
-}
-function parseVersionFromFilename(name){
-  const m = name.match(/(\d{6})\.(\d+)(?:\.(\d+))?/);
-  if (!m) return null;
-  return { yyyymm:+m[1], minor:+m[2], patch:m[3]?+m[3]:0 };
-}
+
 
 // ---------------- GitHub lookup ----------------
 async function listRepoFiles(owner, repo, branch="main"){
