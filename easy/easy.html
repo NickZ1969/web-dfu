@@ -1,0 +1,58 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <title>Everything Fuel Injection – Easy Updater</title>
+  <style>
+    :root { color-scheme: dark; }
+    body { font-family: system-ui, sans-serif; margin: 18px; background:#0e1116; color:#e8eef6; }
+    button { padding:10px 14px; margin:6px 8px 6px 0; border-radius:10px; border:1px solid rgba(255,255,255,.12); background:#151a21; color:#e8eef6; cursor:pointer; }
+    button:disabled { opacity:.45; cursor:not-allowed; }
+    .row { display:flex; flex-wrap:wrap; align-items:center; gap:10px; margin:8px 0; }
+    .card { background:#151a21; border:1px solid rgba(255,255,255,.08); border-radius:14px; padding:14px; margin-top:12px; }
+    pre { background:#0b0f14; border:1px solid rgba(255,255,255,.08); padding:12px; border-radius:12px; overflow:auto; }
+    .ok{color:#2fbf71} .warn{color:#ffb020} .bad{color:#ff4b4b}
+    .mono { font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace; }
+  </style>
+</head>
+<body>
+  <h2>Easy Firmware Updater</h2>
+
+  <div class="card">
+    <div class="row">
+      <button id="btnSerial">1) Connect ECU (Serial)</button>
+      <button id="btnReadVer" disabled>2) Read Version</button>
+      <label class="mono"><input type="checkbox" id="chk1mb"> Use 1MB build</label>
+    </div>
+
+    <div class="row">
+      <button id="btnCheck" disabled>3) Check GitHub</button>
+      <button id="btnDownload" disabled>Download BIN + INI</button>
+    </div>
+
+    <div class="row">
+      <button id="btnBoot" disabled>4) Reboot ECU to DFU</button>
+      <button id="btnFlash" disabled>5) Flash via DFU</button>
+    </div>
+
+    <div class="row mono">
+      <div>ECU: <span id="ecuVer">—</span></div>
+      <div style="margin-left:14px">Latest: <span id="latestVer">—</span></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="mono">Log</div>
+    <pre id="log"></pre>
+  </div>
+
+  <!-- Your repo already has these at root -->
+  <script src="../dfu.js"></script>
+  <script src="../dfuse.js"></script>
+  <script src="../dfu-util.js"></script>
+  <script src="../FileSaver.js"></script>
+
+  <script src="./easy.js"></script>
+</body>
+</html>
