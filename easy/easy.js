@@ -170,16 +170,37 @@ async function closeSerial() {
   reader = writer = port = null;
 }
 
-async function readVersionResponse(timeoutMs = 2500) {
+async function readChunkWithTimeout(ms) {
+  // reader.read() can block forever, so race it against a timer.
+  const timeout = new Promise((resolve) => setTimeout(() => resolve({ timeout: true }), ms));
+
+  const result = await Promise.race([
+    reader.read().then(r => ({ ...r, timeout: false })),
+    timeout
+  ]);
+
+  if (result.timeout) {
+    // Cancel the pending read and re-acquire the reader so future reads work.
+    try { await reader.cancel(); } catch {}
+    try { reader.releaseLock(); } catch {}
+    reader = port.readable.getReader();
+    return null; // no data
+  }
+
+  return result; // {value, done, timeout:false}
+}
+
+async function readVersionResponse(totalTimeoutMs = 2500) {
   const dec = new TextDecoder();
   let buf = "";
   const start = performance.now();
 
-  while (performance.now() - start < timeoutMs) {
-    const { value, done } = await reader.read();
-    if (done) break;
+  while (performance.now() - start < totalTimeoutMs) {
+    const r = await readChunkWithTimeout(250); // poll in small slices
+    if (!r) continue;                          // timed out slice, keep waiting
+    if (r.done) break;
 
-    buf += dec.decode(value, { stream: true });
+    buf += dec.decode(r.value, { stream: true });
 
     const v = parseSpeeduinoVersionFromText(buf);
     if (v) return { raw: buf, ver: v };
@@ -249,7 +270,8 @@ btnSerial.onclick = async () => {
 btnReadVer.onclick = async () => {
   try {
     log("Sending 'S' to read ECU version...");
-    await writeLine("S\n");
+    await writeLine("S\r\n");
+    await new Promise(r => setTimeout(r, 60));
 
     const { raw, ver } = await readVersionResponse(3000);
     log("ECU raw: " + sanitizeForLog(raw));
@@ -260,12 +282,13 @@ btnReadVer.onclick = async () => {
     ecuVerEl.textContent = fmtVer(ecuVer);
     log(`Parsed: ${ver.raw} => ${fmtVer(ecuVer)}`);
 
-    setEnabled(btnCheck, true);
-    setEnabled(btnBoot, true);
+    btnCheck.disabled = false;
+    btnBoot.disabled = false;
   } catch (e) {
     log("ERROR: " + e.message);
   }
 };
+
 
 btnCheck.onclick = async () => {
   try {
